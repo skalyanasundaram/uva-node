@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const async = require('async');
+const jsdom = require("jsdom");
 
 const util = require('./util');
 const RequestClient = require('./requestClient');
@@ -13,15 +14,6 @@ const SUBMIT_PATH = "/index.php?option=com_onlinejudge&Itemid=25&page=save_submi
 const PROBLEM_PATH = "/index.php?option=com_onlinejudge&Itemid=8&category=24&page=show_problem&problem=";
 
 const UHUNT_HOST = 'uhunt.felix-halim.net';
-
-const LOGIN_FORM_PATTERN =
-    // group 1: form attribs
-    // group 2: form HTML contents
-    /<form([^>]+?id\s*=\s*["']?\w*mod_loginform[^>]*)>((?:.|\n)*?)<\/form>/i;
-
-const INPUT_PATTERN =
-    // group 1: attribs
-    /<input([^>]+?)\/?>/gi;
 
 module.exports = (function(parentCls){
     // constructor
@@ -91,7 +83,12 @@ module.exports = (function(parentCls){
                     uvaClient.get('/', subCallback);
                 },
                 function(res, html, subCallback){
-                    var f = cls.parseForm(LOGIN_FORM_PATTERN, html);
+                    jsdom.env(html, [], subCallback);
+                },
+                function (window, subCallback) {
+                    const document = window.document;
+                    var f = cls.parseForm(document);
+
                     var err = null;
                     if (!f)
                         err = ("cannot find HTML form");
@@ -285,60 +282,32 @@ module.exports = (function(parentCls){
         };
     }
 
-    cls.parseForm = function(formPat, html){
-        var match = formPat.exec(html);
-        if (! match) return null;
-
-        var attribs = match[1];
-        var contents = match[2];
-        var atts = util.parseAttribs(attribs);
-        var r = {contents: contents, data: {}};
-
-        for (var key in atts)
-        {
-            if (key.toLowerCase() === 'action')
-            {
-                r.action = util.htmlDecodeSimple(atts[key]);
-                break;
-            }
+    cls.parseForm = function(document){
+        const form = document.getElementById("mod_loginform");
+        if (! form) {
+            return null;
         }
 
-        while(match = INPUT_PATTERN.exec(contents))
-        {
-            atts = util.parseAttribs(match[1]);
-            var value = null, name = null, isText = false;
+        var r = {
+            action: form.action,
+            data: {},
+        };
 
-            for (var key in atts)
-            {
-                var val = util.htmlDecodeSimple(atts[key]);
-                var keyLower = key.toLowerCase();
-                var valLower = val.toLowerCase();
+        for (var i = 0; i < form.elements.length; i++){
+            var input = form.elements[i];
+            var name = input.name;
+            var nameLower = name.toLowerCase();
+            var type = input.type.toLowerCase();
+            var isText = type === 'text' || type === 'password';
 
-                switch(keyLower)
-                {
-                case 'type':
-                    isText = (valLower === 'password' || valLower === 'text');
-                    break;
-                case 'name':
-                    name = val;
-                    break;
-                case 'value':
-                    value = val;
-                    break;
-                }
+            if (isText && nameLower.indexOf("user") >= 0){
+                r.userField = name;
             }
-
-            if (name !== null && isText)
-            {
-                var nameLower = name.toLowerCase();
-                if (nameLower.indexOf("user") >= 0)
-                    r.userField = name;
-                else if (nameLower.indexOf("pass")>=0)
-                    r.passField = name;
+            else if (isText && nameLower.indexOf("pass") >= 0){
+                r.passField = name;
             }
-            else if (value !== null && name !== null)
-            {
-                r.data[name] = value;
+            else if (name && !r.data.hasOwnProperty(name)){
+                r.data[name] = input.value;
             }
         }
 

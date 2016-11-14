@@ -1,7 +1,7 @@
 {
   "name": "uva-node",
   "description": "UVa Command Line Tool",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "author": "Lucas Tan",
   "homepage": "https://github.com/lucastan/uva-node",
   "bugs": "https://github.com/lucastan/uva-node/issues",

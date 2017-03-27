@@ -83,6 +83,12 @@ module.exports = (function(parentCls){
                     uvaClient.get('/', subCallback);
                 },
                 function(res, html, subCallback){
+                    if ((html || '').indexOf("Logout") >= 0){
+                        var e = new Error();
+                        e._uvaLogin = true;
+                        return subCallback(e);
+                    }
+
                     jsdom.env(html, [], subCallback);
                 },
                 function (window, subCallback) {
@@ -115,8 +121,9 @@ module.exports = (function(parentCls){
                 },
             ],
             function(err, res, html){
-                if (err)
+                if (err && !err._uvaLogin){
                     return callback(err);
+                }
                 callback();
             });
         };

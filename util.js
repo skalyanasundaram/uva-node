@@ -8,7 +8,7 @@ const errors = require('./errors');
 const LANG_C      = 1;
 const LANG_JAVA   = 2;
 const LANG_CPP    = 3;
-const LANG_PASCAL = 4;    
+const LANG_PASCAL = 4;
 const LANG_CPP11  = 5;
 
 (function(obj){
@@ -27,16 +27,16 @@ obj.LANG_CPP11 = LANG_CPP11;
  * @param fileExt Lowercase file extension without the dot.
  * @return LANG_* constant or -1 if unrecognized
  */
-obj.getLang = function(fileExt){ 
+obj.getLang = function(fileExt){
     switch (fileExt)
     {
-    case 'c': return LANG_C; 
+    case 'c': return LANG_C;
     case 'java': return LANG_JAVA;
-    case 'cc':  
-    case 'cpp': return LANG_CPP11; 
+    case 'cc':
+    case 'cpp': return LANG_CPP11;
     case 'p':
     case 'pascal':
-    case 'pas': return LANG_PASCAL; 
+    case 'pas': return LANG_PASCAL;
     }
 
     return -1;
@@ -78,7 +78,7 @@ obj.createEndCallback = function(callback){
 
 /**
  * Removes surrounding quote chars (" or ') from a string.
- * Any whitespace surrounded by the quote chars are preserved but 
+ * Any whitespace surrounded by the quote chars are preserved but
  * whitespaces outside of the quote chars are removed. If no quote chars
  * are present the entire string is trimmed of whitespaces.
  * The string is processed adhering to the following rules:
@@ -86,14 +86,14 @@ obj.createEndCallback = function(callback){
  * - if the starting or ending quote char is present, the other must also
  *    be present, that is, there must be no unmatched quote char.
  * <pre>
- * Examples: 
+ * Examples:
  * String s = "  ' hello '  "; // unquote(s) returns "' hello '"
  * String s = "  'hello   ";   // unquote(s) will throw an exception
  * String s = " hello ";       // unquote(s) returns "hello"
- * </pre> 
+ * </pre>
  * @param s
- * @exception if at least one 
- * of the rules is violated. 
+ * @exception if at least one
+ * of the rules is violated.
  */
 obj.unquote = function(s){
     s = s.trim();
@@ -101,15 +101,15 @@ obj.unquote = function(s){
     {
         var start = s.charAt(0);
         var end = s.length >= 2 ? s.charAt(s.length-1) : 0;
-        var isQuote = 
+        var isQuote =
            (start === '"' || start === '\'' ||
             end   === '"' || end   === '\'');
-            
+
         if (isQuote)
         {
             if (start === end)
                 return s.substring(1, s.length-1);
-                
+
             throw {message: "mismatched quote chars"};
         }
     }
@@ -159,23 +159,23 @@ obj.parseArgs = function(s){
                 i = skipWhitespace(s, i+1);
                 if (i < 0) return args;
             }
-            else 
+            else
             {
                 curToken += cur;
                 i++;
             }
         }
-        else 
+        else
         {
             if (cur == '"' || cur == "'")
             {
                 curToken = curToken.trim();
-                
+
                 if (curToken !== '')
                 {
                     args.push(curToken);
                     curToken = '';
-                }  
+                }
 
                 startQuote = cur;
                 i++;
@@ -185,9 +185,9 @@ obj.parseArgs = function(s){
                 args.push(curToken.trim());
                 curToken = '';
                 i = skipWhitespace(s, i+1);
-                if (i < 0) return args;        
+                if (i < 0) return args;
             }
-            else 
+            else
             {
                 curToken += cur;
                 i++;

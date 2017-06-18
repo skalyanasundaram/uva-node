@@ -275,7 +275,11 @@ module.exports = (function(parentCls){
         };
 
         this.getProblemURL = function(probNum, callback){
-            fetchProbs(function(e, probs){
+            fetchProbs(function(err, probs){
+                if (err) {
+                    return callback(err);
+                }
+
                 var theProb = probs[adapData.mapNum[probNum+'']];
                 if (theProb)
                 {

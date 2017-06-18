@@ -198,20 +198,21 @@ function executeLine(line, doneFn)
         if (!checkToks(1, 'view <prob #>')) break;
         
         curAdap.getProblemURL(toks[1], function(e, url){
-            if (url)
-            {
-                try 
-                {
+            if (e) {
+                util.logError(e);
+            }
+            else if (url) {
+                try {
                     app.openBrowser(url);
                 }
-                catch (e)
-                {
-                    printError(e);
+                catch (e) {
+                    util.logError(e);
                 }
             }
-            else
-                console.log('Problem not found'); 
-            
+            else {
+                console.log('Problem not found');
+            }
+
             doneFn();
         });
         

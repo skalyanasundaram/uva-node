@@ -13,6 +13,10 @@ const LANG_CPP11  = 5;
 
 (function(obj){
 
+obj.logError = function(e){
+    console.error(e.stack || ('Error: ' + e));
+};
+
 obj.LANG_C = LANG_C;
 obj.LANG_JAVA = LANG_JAVA;
 obj.LANG_CPP = LANG_CPP;

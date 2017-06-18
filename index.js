@@ -102,11 +102,6 @@ function getCurrentAdapter()
     console.log('No current account selected');
 }
 
-function printError(e)
-{
-    console.log('Error: ' + (e.message || e));
-}
-
 function executeLine(line, doneFn) 
 {
     var toks;
@@ -116,7 +111,7 @@ function executeLine(line, doneFn)
     }
     catch (e)
     {
-        printError(e);
+        util.logError(e);
         doneFn();
         return;
     }
@@ -362,7 +357,7 @@ function executeLine(line, doneFn)
                 console.log('Account set as current');
             }
             catch (e){
-                printError(e);
+                util.logError(e);
             }
         }
         else if (toks.length === 1)
@@ -404,7 +399,7 @@ function executeLine(line, doneFn)
             console.log('Account removed');
         }
         catch(e) {
-            printError(e);
+            util.logError(e);
         }
         
         break;

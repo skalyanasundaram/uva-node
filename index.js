@@ -40,7 +40,7 @@ if (! interactive)
 var rl = readline.createInterface(process.stdin, process.stdout);
 
 rl.on('line', function(line){
-    executeLine(line, function (quitting){    
+    executeLine(line, function (quitting){
         if (quitting)
         {
             rl.close();
@@ -69,7 +69,7 @@ function printStatus(subs)
     //           123456789---123456---1234567890123456---123456---1234567---12345---yyyy-mm-dd hh:mm:ss
 
     var hasColors = process.stdout.isTTY;
-    var formatStr = "%9d   %6d   %"+(hasColors ? 26 : 16)+"s   %6s   %3d.%03d   %5s   %4d-%02d-%02d %02d:%02d:%02d"; 
+    var formatStr = "%9d   %6d   %"+(hasColors ? 26 : 16)+"s   %6s   %3d.%03d   %5s   %4d-%02d-%02d %02d:%02d:%02d";
     var verdictKey = hasColors ? 'coloredLabel' : 'label';
 
     var date = new Date();
@@ -95,14 +95,14 @@ function printStatus(subs)
 }
 
 function getCurrentAdapter()
-{ 
+{
     var curAdap = app.getCurrentAdapter();
     if (curAdap) return curAdap;
 
     console.log('No current account selected');
 }
 
-function executeLine(line, doneFn) 
+function executeLine(line, doneFn)
 {
     var toks;
     try
@@ -185,7 +185,7 @@ function executeLine(line, doneFn)
         }
     }
 
-    switch(action) 
+    switch(action)
     {
     case 'exit':
     case 'quit':
@@ -196,7 +196,7 @@ function executeLine(line, doneFn)
         var curAdap = getCurrentAdapter();
         if (!curAdap) break;
         if (!checkToks(1, 'view <prob #>')) break;
-        
+
         curAdap.getProblemURL(toks[1], function(e, url){
             if (e) {
                 util.logError(e);
@@ -215,7 +215,7 @@ function executeLine(line, doneFn)
 
             doneFn();
         });
-        
+
         return;
 
     case 'set-browser':
@@ -315,12 +315,12 @@ function executeLine(line, doneFn)
             probNum = toks[1];
             filePath = toks[2];
         }
-        else 
+        else
         {
             checkToks(2, 'send <prob#> <fileName/Path>');
             break;
         }
-        
+
         try
         {
             console.log('Logging in...');
@@ -339,7 +339,7 @@ function executeLine(line, doneFn)
                     else
                         console.log('Send ok');
                     doneFn();
-                });    
+                });
             });
 
             return;
@@ -375,7 +375,7 @@ function executeLine(line, doneFn)
         // use traditional space-splitting in case password has quote chars.
         toks = line.trim().split(/\s+/g);
         if (! checkToks(3, 'add <type> <userName> <password>')) break;
-        
+
         var normType = Adapter.normalizeType(toks[1]);
         if (!normType)
         {
@@ -389,7 +389,7 @@ function executeLine(line, doneFn)
             console.log('An existing account was replaced');
         else
             console.log('Account added successfully');
-        
+
         break;
 
     case 'remove':
@@ -402,7 +402,7 @@ function executeLine(line, doneFn)
         catch(e) {
             util.logError(e);
         }
-        
+
         break;
 
     case 'show':
@@ -412,7 +412,7 @@ function executeLine(line, doneFn)
         {
             console.log('No accounts');
             break;
-        }   
+        }
 
         console.log('      type     | user');
         //           12345678901234---1234
@@ -429,9 +429,9 @@ function executeLine(line, doneFn)
     case 'status':
         var curAdap = getCurrentAdapter();
         if (!curAdap) break;
-        
+
         var num = 10;
-        if (toks.length == 2) 
+        if (toks.length == 2)
         {
             num = parseInt(toks[1]);
             if (num <= 0 || isNaN(num))
@@ -464,4 +464,3 @@ function executeLine(line, doneFn)
 
     doneFn();
 }
-

@@ -1,7 +1,7 @@
 {
   "name": "uva-node",
   "description": "UVa Command Line Tool",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "author": "Lucas Tan",
   "homepage": "https://github.com/lucastan/uva-node",
   "bugs": "https://github.com/lucastan/uva-node/issues",
@@ -16,7 +16,7 @@
     "url": "http://github.com/lucastan/uva-node.git"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=6.0.0"
   },
   "scripts": {
     "start": "node ."

@@ -143,7 +143,7 @@ module.exports = (function(){
 
                 // important! must preserve rawMode
                 var oldMode = setRaw(true);
-                var ps = spawn(editor, args, {customFds:[0,1,2]});
+                var ps = spawn(editor, args, {stdio:[0,1,2]});
                 ps.on('exit', function(code,sig){
                     setRaw(oldMode);
                     process.stdin.resume();
@@ -257,7 +257,7 @@ module.exports = (function(){
             var newArgs = JSON.parse(JSON.stringify(browserOpts.args));
             newArgs.unshift(url);
 
-            var ps = spawn(browserOpts.path, newArgs, {customFds:[0,1,2]});
+            var ps = spawn(browserOpts.path, newArgs, {stdio:[0,1,2]});
         };
     }
 
